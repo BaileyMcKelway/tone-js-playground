@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './tonejs.png';
 import Tone from 'tone'
+import styled from 'styled-components'
 import './App.css';
 
 let synth = new Tone.Synth({
@@ -9,34 +10,42 @@ let synth = new Tone.Synth({
     "modulationFrequency": 2
   },
   "envelope" : {
-    "attack" : 0.2,
+    "attack" : 2,
     "decay" : 1,
-    "sustain" : 2,
+    "sustain" : 20,
     "release" : 0.9,
   }
 }).toMaster();
 
 class NewToneTrack extends Component {
+
   
-  playTheBeats() {
-    synth.triggerAttack("D3", "1", 2);
-    synth.triggerAttack("F3", "1", 2);
-    synth.triggerAttack("A2", "1", 2);
+  playTheBeats(x) {
+    synth.triggerAttack(x);
     console.log("playTheBeats");
   }
   stopTheBeats() {
     synth.triggerRelease();
-    console.log("funtion runner");
+    console.log("stoptheBeats");
   }
 
   render() {
     // let synth = new Tone.AMSynth().toMaster();
+    
+    let theNotes = ["C4", "D4", "E4", "F4", "G4", "A5", "B5"];
     console.log("run the function");
+    let mapTheNotes = theNotes.map(x => {
+      return (
+        <div key={x} onMouseDown={() => this.playTheBeats(x)} onMouseUp={() => this.stopTheBeats()}>
+          {x}
+        </div>
+      )
+    })
     
     return (
-      <div style={{display: "grid", alignContent: "center", justifyContent: "center"}}>
-        <div onMouseDown={() => this.playTheBeats()} onMouseUp={() => this.stopTheBeats()} style={{width: "75px", height: "75px", backgroundColor: "teal"}}></div>
-      </div>
+      <KeyHolder>
+        {mapTheNotes}
+      </KeyHolder>
     )
   }
 }
@@ -57,9 +66,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Tone.js Playground</h1>
         </header>
-        <div style={{padding: "50px 25px"}}>
-          <NewToneTrack />
-        </div>
+        <NewToneTrack />
         {/* <button onClick={ () => this.playThisNote(synth)}>PLAY THE PHAT TUNES</button> */}
       </div>
     );
@@ -67,3 +74,30 @@ class App extends Component {
 }
 
 export default App;
+
+
+const KeyHolder = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 10%);
+  grid-template-rows: 1fr;
+  align-content: center;
+  justify-content: center;
+  width: 90%;
+  height: auto;
+  margin: 25px auto;
+  div {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    height: 100px;
+    margin: 1px;
+    border: 2px solid black;
+    background-color: #f1f1f1;
+    font-weight: bold;
+    transition: .5s;
+    &:hover {
+      background-color: #d1d1d1;
+      transition: .5s;
+    }
+  }
+`
